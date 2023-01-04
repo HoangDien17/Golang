@@ -1,0 +1,330 @@
+basePath: /api/v1
+definitions:
+  DeleteResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  LoginResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      token:
+        type: string
+    required:
+    - email
+    type: object
+  PermissionDTO:
+    properties:
+      permissions:
+        items:
+          type: string
+        type: array
+    required:
+    - permissions
+    type: object
+  Role:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      permissions:
+        items:
+          $ref: '#/definitions/enum.PermissionEnum'
+        type: array
+    type: object
+  RoleDTO:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+    required:
+    - description
+    - name
+    type: object
+  User:
+    properties:
+      email:
+        type: string
+      id:
+        type: string
+      password:
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+    type: object
+  UserDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  UserLoginDTO:
+    properties:
+      email:
+        type: string
+    required:
+    - email
+    type: object
+  enum.PermissionEnum:
+    enum:
+    - READ
+    - WRITE
+    - UPDATE
+    - DELETE
+    type: string
+    x-enum-varnames:
+    - READ
+    - WRITE
+    - UPDATE
+    - DELETE
+host: localhost:4000
+info:
+  contact: {}
+  description: My awesome API
+  title: My awesome API
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login
+      parameters:
+      - description: Information of user
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/UserDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/LoginResponse'
+      summary: Login
+      tags:
+      - Users
+  /role:
+    post:
+      consumes:
+      - application/json
+      description: Create role
+      parameters:
+      - description: Information of role
+        in: body
+        name: createRole
+        required: true
+        schema:
+          $ref: '#/definitions/RoleDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+      security:
+      - ApiKeyAuth: []
+      summary: Create role
+      tags:
+      - Roles
+  /role/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete role by id
+      parameters:
+      - description: Id of role
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete role by id
+      tags:
+      - Roles
+    get:
+      consumes:
+      - application/json
+      description: Find role by id
+      parameters:
+      - description: Id of role
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+      security:
+      - ApiKeyAuth: []
+      summary: Find role by id
+      tags:
+      - Roles
+  /role/{id}/permission:
+    put:
+      consumes:
+      - application/json
+      description: Update permission by admin
+      parameters:
+      - description: Id of role
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Information of permission
+        in: body
+        name: updatePermission
+        required: true
+        schema:
+          $ref: '#/definitions/PermissionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Role'
+      security:
+      - ApiKeyAuth: []
+      summary: Update permission by admin
+      tags:
+      - Roles
+  /role/all:
+    get:
+      consumes:
+      - application/json
+      description: Find all roles
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Role'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Find all roles
+      tags:
+      - Roles
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Create user
+      parameters:
+      - description: Information of user
+        in: body
+        name: createUser
+        required: true
+        schema:
+          $ref: '#/definitions/UserLoginDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+      summary: Create user
+      tags:
+      - Users
+  /user:
+    get:
+      consumes:
+      - application/json
+      description: Find all user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/User'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: Find all user
+      tags:
+      - Users
+  /user/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete user by id
+      parameters:
+      - description: Id of user
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeleteResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete user by id
+      tags:
+      - Users
+    get:
+      consumes:
+      - application/json
+      description: Find user by id
+      parameters:
+      - description: Id of user
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+      security:
+      - ApiKeyAuth: []
+      summary: Find user by id
+      tags:
+      - Users
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
